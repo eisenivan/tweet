@@ -237,10 +237,14 @@
     function load(widget) {
       var loading = $('<p class="loading">'+s.loading_text+'</p>');
       if (s.loading_text) $(widget).not(":has(.tweet_list)").empty().append(loading);
-      $.getJSON(build_api_url(), function(data){
-        var tweets = $.map(data.results || data, extract_template_data);
-        tweets = $.grep(tweets, s.filter).sort(s.comparator).slice(0, s.count);
-        $(widget).trigger("tweet:retrieved", [tweets]);
+      $.ajax({
+        dataType: "jsonp",
+        url: build_api_url(),
+        success: function(data){
+          var tweets = $.map(data.results || data, extract_template_data);
+          tweets = $.grep(tweets, s.filter).sort(s.comparator).slice(0, s.count);
+          $(widget).trigger("tweet:retrieved", [tweets]);
+        }
       });
     }
 
